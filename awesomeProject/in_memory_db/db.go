@@ -19,6 +19,53 @@ import (
 // Usage: run `go run in_memory_db.go` to see a usage example in main.
 
 // DB is the in-memory database
+
+
+/*
+  for switchable cache eviction
+const (
+	LRU EvictionPolicy = iota
+	LFU
+	MRU
+)
+type DB struct {
+	mu sync.RWMutex
+	data map[string]*list.Element
+	list *list.List
+	capacity int
+	policy EvictionPolicy
+	janitorCh chan struct{}
+	closed chan struct{}
+	stats Stats
+}
+func (db *DB) evict() {
+	var el *list.Element
+	switch db.policy {
+		case LRU:
+			el = db.list.Back()
+		case MRU:
+			el = db.list.Front()
+		case LFU:
+			// find least frequently used (linear scan)
+			minFreq := int(^uint(0) >> 1)
+			for e := db.list.Back(); e != nil; e = e.Prev() {
+				kp := e.Value.(*kvPair)
+				if kp.item.freq < minFreq {
+					minFreq = kp.item.freq
+					el = e
+				}
+			}
+		}
+		if el != nil {
+		db.removeElement(el)
+		db.stats.Evictions++
+	}
+}
+
+*/
+
+
+
 type DB struct {
 	mu        sync.RWMutex
 	data      map[string]*list.Element // map to list element for LRU
